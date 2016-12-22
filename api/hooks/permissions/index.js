@@ -71,25 +71,23 @@ class Permissions extends Marlinspike {
 
     this.installModelOwnership()
 
-    this.sails.after('hook:orm:loaded', () => {
-      this.sails.log.verbose('hook:permissions (install models)');
-      sails.models.model.count()
-        .then(count => {
-          if (count === _.keys(this.sails.models).length) {
-            this.sails.log.verbose('hook:permissions (no changes) reload complete');
-            this.sails.emit('hook:permissions:reloaded');
-            return
-          }
+    this.sails.log.verbose('hook:permissions (install models)');
+    sails.models.model.count()
+      .then(count => {
+        if (count === _.keys(this.sails.models).length) {
+          this.sails.log.verbose('hook:permissions (no changes) reload complete');
+          this.sails.emit('hook:permissions:reloaded');
+          return
+        }
 
-          return this.initializeFixtures().then(() => {
-                this.sails.log.verbose('hook:permissions reload complete');
-                this.sails.emit('hook:permissions:reloaded');
-          })
+        return this.initializeFixtures().then(() => {
+              this.sails.log.verbose('hook:permissions reload complete');
+              this.sails.emit('hook:permissions:reloaded');
         })
-        .catch(error => {
-            this.sails.log.error(error)
-        })
-    })
+      })
+      .catch(error => {
+          this.sails.log.error(error)
+      })
   }
 
   validatePolicyConfig () {
