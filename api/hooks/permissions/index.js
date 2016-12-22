@@ -57,6 +57,32 @@ class Permissions extends Marlinspike {
           next(error)
         })
     })
+
+    this.sails.on('hook:permissions:reload', () => {
+      this.reload();
+    })
+  }
+
+  reload() {
+    let config = this.sails.config.permissions
+    this.installModelOwnership()
+
+    this.sails.after('hook:orm:loaded', () => {
+      sails.models.model.count()
+        .then(count => {
+          if (count === _.keys(this.sails.models).length) {
+            this.sails.emit('hook:permissions:reloaded');
+            return
+          }
+
+          return this.initializeFixtures().then(() => {
+                this.sails.emit('hook:permissions:reloaded');
+          })
+        })
+        .catch(error => {
+            this.sails.log.error(error)
+        })
+    })
   }
 
   validatePolicyConfig () {
