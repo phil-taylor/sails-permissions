@@ -72,7 +72,7 @@ class Permissions extends Marlinspike {
     this.installModelOwnership()
 
     this.sails.log.verbose('hook:permissions (install models)');
-    sails.models.model.count()
+    return sails.models.model.count()
       .then(count => {
         if (count === _.keys(this.sails.models).length) {
           this.sails.log.verbose('hook:permissions (no changes) reload complete');
@@ -84,9 +84,6 @@ class Permissions extends Marlinspike {
               this.sails.log.verbose('hook:permissions reload complete');
               this.sails.emit('hook:permissions:reloaded');
         })
-      })
-      .catch(error => {
-          this.sails.log.error(error)
       })
   }
 
