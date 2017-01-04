@@ -45,11 +45,11 @@ _.merge(exports, {
         })
         .then(function (updatedUser) {
           sails.log.silly('role "registered" attached to user', user.username);
-          next();
+          return next();
         })
         .catch(function (e) {
           sails.log.error(e);
-          next(e);
+          return next(e);
         })
     }
   ]
