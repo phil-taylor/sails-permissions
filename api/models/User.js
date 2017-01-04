@@ -21,19 +21,19 @@ _.merge(exports, {
   afterCreate: [
     function setOwner (user, next) {
       sails.log.verbose('User.afterCreate.setOwner', user);
-      User
+      return User
         .update({ id: user.id }, { owner: user.id })
         .then(function (user) {
-          next();
+          return null;
         })
         .catch(function (e) {
           sails.log.error(e);
-          next(e);
-        });
+          return e;
+        }).asCallback(next);
     },
     function attachDefaultRole (user, next) {
       sails.log('User.afterCreate.attachDefaultRole', user);
-      User.findOne(user.id)
+      return User.findOne(user.id)
         .populate('roles')
         .then(function (_user) {
           user = _user;
@@ -45,12 +45,12 @@ _.merge(exports, {
         })
         .then(function (updatedUser) {
           sails.log.silly('role "registered" attached to user', user.username);
-          return next();
+          return null;
         })
         .catch(function (e) {
           sails.log.error(e);
-          return next(e);
-        })
+          return e;
+        }).asCallback(next);
     }
   ]
 });
