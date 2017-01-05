@@ -96,7 +96,11 @@ function grantRegisteredPermissions (roles, models, admin, config) {
 
   // XXX copy/paste from above. terrible. improve.
   var permittedModels = _.filter(models, function (model) {
-    return !_.contains(modelRestrictions.registered, model.name);
+    var whitelist = _.get(config, 'whitelist.registered') || [];
+
+    // not restricted and is on the whitelist if one was supplied
+    return !_.contains(modelRestrictions.registered, model.name) &&
+        (_.isEmpty(whitelist) || _.contains(whitelist, model.name));
   });
   var grantPermissions = _.flatten(_.map(permittedModels, function (modelEntity) {
 
